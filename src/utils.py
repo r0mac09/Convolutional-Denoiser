@@ -4,6 +4,7 @@ import random
 import numpy as np
 import torchvision.models as models
 import torchvision.transforms as transforms
+from cv2 import GaussianBlur
 from imgaug import augmenters as iaa
 from PIL import Image
 from torch.utils.data.dataset import Dataset
@@ -38,7 +39,7 @@ class ImDataset(Dataset):
 		t_image = self.transforms(image)
 		return t_image
 
-	def __len__(self):  # return count of sample we have
+	def __len__(self): 
 		return len(self.input_paths)
 
 	def sample(self, num_samples=5):
@@ -72,9 +73,12 @@ class RandomNoise(object):
 			im_arr = self.poisson.augment_image(im_arr)
 		if bool(random.getrandbits(1)):
 			im_arr = self.saltpeper.augment_image(im_arr)
+		if bool(random.getrandbits(1)):
+			kernel_size = 1 + 2*np.random.randint(0, 4)
+			im_arr = GaussianBlur(im_arr, (5, 5), 0.0)
 
 		image = Image.fromarray(im_arr)
-		im_quality = np.random.randint(10, 30)
+		im_quality = np.random.randint(10, 20)
 		buffer = BytesIO()
 		image.save(buffer, format='jpeg', quality=im_quality)
 		buffer.seek(0)
