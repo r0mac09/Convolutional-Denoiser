@@ -24,7 +24,7 @@ class ImDataset(Dataset):
 		self.image_transforms = [
 			transforms.Resize((512, 512)),
 			RandomNoise(),
-			transforms.ColorJitter(brightness=(0.7, 1.5), contrast=0.7, saturation=0.7)
+			transforms.ColorJitter(brightness=(0.7, 1.5), contrast=0.7, saturation=0.8)
 		]
 
 		self.tensor_transforms = [
@@ -59,7 +59,7 @@ class ImDataset(Dataset):
 class RandomNoise(object):
 	def __init__(self):
 		self.gaussian = iaa.AdditiveGaussianNoise(loc=0, scale=0.02*255)
-		self.poisson = iaa.AdditivePoissonNoise(lam=10.0, per_channel=True)
+		self.poisson = iaa.AdditivePoissonNoise(lam=5.0, per_channel=True)
 		self.saltpeper = iaa.SaltAndPepper(p=0.01)
 		if not os.path.isdir('tmp'):
 			os.makedirs('tmp')
@@ -78,7 +78,7 @@ class RandomNoise(object):
 			im_arr = GaussianBlur(im_arr, (5, 5), 0.0)
 
 		image = Image.fromarray(im_arr)
-		im_quality = np.random.randint(10, 20)
+		im_quality = np.random.randint(15, 25)
 		buffer = BytesIO()
 		image.save(buffer, format='jpeg', quality=im_quality)
 		buffer.seek(0)
