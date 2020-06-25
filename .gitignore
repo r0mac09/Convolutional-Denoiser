@@ -2,4 +2,3 @@
 src/__pycache__
 test.py
 checkpoints
-trained_model/denoiser.pth
