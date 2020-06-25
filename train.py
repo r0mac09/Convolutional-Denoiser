@@ -36,10 +36,10 @@ if __name__ == "__main__":
 	for epoch in range(epochs):
 		net.train()
 		epoch_loss = 0.0
-		for inputs in loader:
+		for inputs, labels in loader:
 			inputs = inputs.cuda()
 			output = net(inputs)
-			loss = criterion(output, inputs)
+			loss = criterion(output, labels.cuda())
 			batch_loss = loss.item()
 			optimizer.zero_grad()
 			loss.backward()

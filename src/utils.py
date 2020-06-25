@@ -32,12 +32,14 @@ class ImDataset(Dataset):
 			transforms.Normalize((0.485, 0.456, 0.406), (0.229, 0.224, 0.225))
 		]
 
-		self.transforms = transforms.Compose(self.image_transforms + self.tensor_transforms)
+		self.train_transforms = transforms.Compose(self.image_transforms + self.tensor_transforms)
+		self.label_transforms = transforms.Compose([transforms.Resize((512, 512))] + self.tensor_transforms)
 
 	def __getitem__(self, index):
 		image = Image.open(self.input_folder + self.input_paths[index])
-		t_image = self.transforms(image)
-		return t_image
+		t_image = self.train_transforms(image)
+		l_image = self.label_transforms(image)
+		return t_image, l_image
 
 	def __len__(self): 
 		return len(self.input_paths)
