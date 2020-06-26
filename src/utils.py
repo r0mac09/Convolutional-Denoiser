@@ -22,18 +22,17 @@ class ImDataset(Dataset):
 		self.input_paths = [pth for pth in os.listdir(self.input_folder) if pth.endswith('.png')]
 
 		self.image_transforms = [
-			transforms.Resize((512, 512)),
+			transforms.Resize((400, 400)),
 			RandomNoise(),
-			transforms.ColorJitter(brightness=(0.8, 1.3), contrast=0.8, saturation=0.9)
+			transforms.ColorJitter(brightness=(0.9, 1.1), contrast=(0.9, 1.1), saturation=0.9)
 		]
 
 		self.tensor_transforms = [
-			transforms.ToTensor(),
-			transforms.Normalize((0.485, 0.456, 0.406), (0.229, 0.224, 0.225))
+			transforms.ToTensor()
 		]
 
 		self.train_transforms = transforms.Compose(self.image_transforms + self.tensor_transforms)
-		self.label_transforms = transforms.Compose([transforms.Resize((512, 512))] + self.tensor_transforms)
+		self.label_transforms = transforms.Compose([transforms.Resize((400, 400))] + self.tensor_transforms)
 
 	def __getitem__(self, index):
 		image = Image.open(self.input_folder + self.input_paths[index])
@@ -61,26 +60,26 @@ class ImDataset(Dataset):
 class RandomNoise(object):
 	def __init__(self):
 		self.gaussian = iaa.AdditiveGaussianNoise(loc=0, scale=0.02*255)
-		self.poisson = iaa.AdditivePoissonNoise(lam=5.0, per_channel=True)
-		self.saltpeper = iaa.SaltAndPepper(p=0.01)
+		self.poisson = iaa.AdditivePoissonNoise(lam=4.0, per_channel=True)
+		self.saltpeper = iaa.SaltAndPepper(p=0.001)
 		if not os.path.isdir('tmp'):
 			os.makedirs('tmp')
 
 	def __call__(self, sample):
 		im_arr = np.array(sample)
 
-		if bool(random.getrandbits(1)):
-			im_arr = self.gaussian.augment_image(im_arr)
-		if bool(random.getrandbits(1)):
-			im_arr = self.poisson.augment_image(im_arr)
-		if bool(random.getrandbits(1)):
-			im_arr = self.saltpeper.augment_image(im_arr)
+		# if bool(random.getrandbits(1)):
+		# 	im_arr = self.gaussian.augment_image(im_arr)
+		# if bool(random.getrandbits(1)):
+		# 	im_arr = self.poisson.augment_image(im_arr)
+		# if bool(random.getrandbits(1)):
+		# 	im_arr = self.saltpeper.augment_image(im_arr)
 		if bool(random.getrandbits(1)):
 			kernel_size = 1 + 2*np.random.randint(0, 4)
-			im_arr = GaussianBlur(im_arr, (5, 5), 0.0)
+			im_arr = GaussianBlur(im_arr, (kernel_size, kernel_size), 0.0)
 
 		image = Image.fromarray(im_arr)
-		im_quality = np.random.randint(20, 35)
+		im_quality = np.random.randint(25, 55)
 		buffer = BytesIO()
 		image.save(buffer, format='jpeg', quality=im_quality)
 		buffer.seek(0)

@@ -29,4 +29,6 @@ class Denoiser(nn.Module):
 				nn.init.zeros_(m.bias)
 
 	def forward(self, x):
-		return self.layers(x)
+		y = x
+		x = self.layers(x)
+		return y - x
