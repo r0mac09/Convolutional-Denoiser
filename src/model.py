@@ -10,14 +10,23 @@ class Denoiser(nn.Module):
 									nn.BatchNorm2d(depth),
 									nn.ReLU(inplace=True))
 		
-		out_layer = nn.Conv2d(depth, 3, kernel_size=3, padding=1)
+		out_layer = nn.Sequential(nn.Conv2d(depth, 3, kernel_size=3, padding=1),
+								   nn.Sigmoid())		
 
 		self.layers = [in_layer]
 		self.layers += [inter_layer]*depth
 		self.layers += [out_layer]
 		self.layers = nn.Sequential(*self.layers)
 
+		self._initialize_weights()
+
+	def _initialize_weights(self):
+		for m in self.modules():
+			if isinstance(m, nn.Conv2d):
+				nn.init.kaiming_normal_(m.weight)
+			elif isinstance(m, nn.BatchNorm2d):
+				nn.init.ones_(m.weight)
+				nn.init.zeros_(m.bias)
+
 	def forward(self, x):
-		y = x
-		noise = self.layers(x)
-		return y - noise
+		return self.layers(x)

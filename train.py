@@ -11,13 +11,11 @@ from src.model import Denoiser
 from src.utils import ImDataset
 
 if __name__ == "__main__":
-	net = Denoiser(depth=12).cuda()
+	net = Denoiser(depth=10, conv_features=64).cuda()
 	print(net)
 	batch = 25
 	dataset = ImDataset(input_folder='../Scaler/dataset/images1024x1024')
 	loader = DataLoader(dataset, batch_size=batch, shuffle=True, num_workers=0)
-
-	print(list(net.parameters()))
 
 	optimizer = optim.SGD(net.parameters(),
 						  lr=0.05,
@@ -41,15 +39,18 @@ if __name__ == "__main__":
 			output = net(inputs)
 			loss = criterion(output, labels.cuda())
 			batch_loss = loss.item()
+			# print(batch_loss)
+
 			optimizer.zero_grad()
 			loss.backward()
 			optimizer.step()
-
-			epoch_loss += batch_loss
+			
+			epoch_loss += batch_loss/batch
 		epoch_loss /= len(loader)
 		print(f'Epoch {epoch} done. Loss {epoch_loss}')
 
-		if epoch_loss < best_loss:
-			torch.save(net.state_dict(), f'checkpoints/CP{epoch}.pth')
+		torch.save(net.state_dict(), f'checkpoints/CP{epoch}.pth')
+
+		if epoch_loss < best_loss:		
 			torch.save(net.state_dict(), f'trained_model/denoiser.pth')
 			best_loss = epoch_loss
