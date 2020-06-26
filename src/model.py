@@ -1,7 +1,7 @@
 import torch.nn as nn
 
 class Denoiser(nn.Module):
-	def __init__(self, depth=10, conv_features=32):
+	def __init__(self, depth=16, conv_features=64):
 		super(Denoiser, self).__init__()
 		in_layer = nn.Sequential(nn.Conv2d(3, depth, kernel_size=3, stride=1, padding=1),
 								 nn.ReLU(inplace=True))

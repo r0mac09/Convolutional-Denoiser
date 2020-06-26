@@ -11,9 +11,9 @@ from src.model import Denoiser
 from src.utils import ImDataset
 
 if __name__ == "__main__":
-	net = Denoiser(depth=10, conv_features=64).cuda()
+	net = Denoiser(depth=16, conv_features=64).cuda()
 	print(net)
-	batch = 25
+	batch = 15
 	dataset = ImDataset(input_folder='../Scaler/dataset/images1024x1024')
 	loader = DataLoader(dataset, batch_size=batch, shuffle=True, num_workers=0)
 

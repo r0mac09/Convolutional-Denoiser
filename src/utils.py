@@ -24,7 +24,7 @@ class ImDataset(Dataset):
 		self.image_transforms = [
 			transforms.Resize((512, 512)),
 			RandomNoise(),
-			transforms.ColorJitter(brightness=(0.7, 1.5), contrast=0.7, saturation=0.8)
+			transforms.ColorJitter(brightness=(0.8, 1.3), contrast=0.8, saturation=0.9)
 		]
 
 		self.tensor_transforms = [
@@ -80,7 +80,7 @@ class RandomNoise(object):
 			im_arr = GaussianBlur(im_arr, (5, 5), 0.0)
 
 		image = Image.fromarray(im_arr)
-		im_quality = np.random.randint(15, 25)
+		im_quality = np.random.randint(20, 35)
 		buffer = BytesIO()
 		image.save(buffer, format='jpeg', quality=im_quality)
 		buffer.seek(0)
