@@ -19,7 +19,7 @@ if __name__ == "__main__":
 	dataset = ImDataset(input_folder='../Scaler/dataset/images1024x1024')
 	loader = DataLoader(dataset, batch_size=batch, shuffle=True, num_workers=0)
 
-	optimizer = optim.Adam(net.parameters(), lr=0.0005)
+	optimizer = optim.Adam(net.parameters(), lr=0.0001)
 
 	criterion = nn.MSELoss()
 
