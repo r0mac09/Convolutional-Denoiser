@@ -13,6 +13,7 @@ from src.utils import ImDataset
 
 if __name__ == "__main__":
 	net = Denoiser(depth=20, conv_features=128).cuda()
+	net.load_state_dict(torch.load('trained_model/denoiser.pth'))
 	print(net)
 	batch = 15
 	dataset = ImDataset(input_folder='../Scaler/dataset/images1024x1024')
@@ -28,9 +29,9 @@ if __name__ == "__main__":
 		os.makedirs('checkpoints')
 
 	best_loss = 10000.
-
+	net.train()
 	for epoch in range(epochs):
-		net.train()
+		
 		epoch_loss = 0.0
 		for inputs, labels in loader:
 			inputs = inputs.cuda()
