@@ -24,7 +24,6 @@ class ImDataset(Dataset):
 		self.image_transforms = [
 			transforms.Resize((400, 400)),
 			RandomNoise()
-			# transforms.ColorJitter(brightness=(0.9, 1.1), contrast=(0.9, 1.1), saturation=0.9)
 		]
 
 		self.tensor_transforms = [
@@ -68,24 +67,10 @@ class RandomNoise(object):
 	def __call__(self, sample):
 		im_arr = np.array(sample)
 
-		# if bool(random.getrandbits(1)):
 		im_arr = self.gaussian.augment_image(im_arr)
-		# if bool(random.getrandbits(1)):
 		im_arr = self.poisson.augment_image(im_arr)
-		# if bool(random.getrandbits(1)):
-			# im_arr = self.saltpeper.augment_image(im_arr)
-		# if bool(random.getrandbits(1)):
-		# kernel_size = 1 + 2*np.random.randint(1, 3)
 		im_arr = GaussianBlur(im_arr, (3, 3), 0.0)
-
 		im_arr = fastNlMeansDenoisingColored(im_arr, None, 6, 6, 4, 12)
-
 		image = Image.fromarray(im_arr)
-		# im_quality = np.random.randint(20, 30)
-		# buffer = BytesIO()
-		# image.save(buffer, format='jpeg', quality=im_quality)
-		# buffer.seek(0)
-
-		# return Image.open(buffer)
 
 		return image
