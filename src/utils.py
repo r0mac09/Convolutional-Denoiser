@@ -60,7 +60,6 @@ class RandomNoise(object):
 	def __init__(self):
 		self.gaussian = iaa.AdditiveGaussianNoise(loc=0, scale=0.04*255)
 		self.poisson = iaa.AdditivePoissonNoise(lam=5.0, per_channel=True)
-		self.saltpeper = iaa.SaltAndPepper(p=0.001)
 		if not os.path.isdir('tmp'):
 			os.makedirs('tmp')
 
